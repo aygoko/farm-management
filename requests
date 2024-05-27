@@ -1,0 +1,16 @@
+
+Получение общего количества продукции
+
+python farm_management.py get_total_product_quantity --host localhost --user root --password root --database farm_management --product_name "Зерно"
+
+Получение прибыли фермеров
+
+python farm_management.py get_farmer_profit --host localhost --user root --password root --database farm_management
+
+Получение кредита фермеров
+
+python farm_management.py get_farmer_credit --host localhost --user root --password root --database farm_management
+
+Получение разницы между кредитом и прибылью
+
+python farm_management.py get_profit_vs_credit --host localhost --user root --password root --database farm_management
