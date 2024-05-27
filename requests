@@ -14,3 +14,41 @@ python farm_management.py get_farmer_credit --host localhost --user root --passw
 Получение разницы между кредитом и прибылью
 
 python farm_management.py get_profit_vs_credit --host localhost --user root --password root --database farm_management
+
+Добавление фермера
+
+python farm_management.py add_farmer --host localhost --user root --password root --database farm_management --farmer_name "Иван Иванов" --address "ул. Ленина, 1"
+Обновление фермера
+
+python farm_management.py update_farmer --host localhost --user root --password root --database farm_management --farmer_id 1 --farmer_name "Иван Петров" --address "ул. Пушкина, 2"
+
+Удаление фермера
+
+python farm_management.py delete_farmer --host localhost --user root --password root --database farm_management --farmer_id 1
+
+Добавление продукции
+
+python farm_management.py add_product --host localhost --user root --password root --database farm_management --product_farmer_id 1 --product_name "Зерно" --quantity 100 --quality "Высокое" --price 50.00
+Обновление продукции
+
+python farm_management.py update_product --host localhost --user root --password root --database farm_management --product_id 1 --quantity 120 --price 55.00
+Удаление продукции
+
+
+python farm_management.py delete_product --host localhost --user root --password root --database farm_management --product_id 1
+Добавление потребности
+
+python farm_management.py add_need --host localhost --user root --password root --database farm_management --need_farmer_id 1 --need_name "Удобрения" --type "Товар" --need_price 200.00
+Обновление потребности
+
+python farm_management.py update_need --host localhost --user root --password root --database farm_management --need_id 1 --need_price 210.00
+Удаление потребности
+
+python farm_management.py delete_need --host localhost --user root --password root --database 
+
+Получение информации о продукции
+
+python farm_management.py get_products --host localhost --user root --password root --database farm_management
+Получение информации о потребностях
+
+python farm_management.py get_needs --host localhost --user root --password root --database farm_management
