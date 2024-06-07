@@ -17,7 +17,8 @@ class FarmManagementDB:
                 host=self.host,
                 user=self.user,
                 password=self.password,
-                database=self.database
+                database=self.database,
+                auth_plugin='mysql_native_password'
             )
             if self.connection.is_connected():
                 print("Successfully connected to the database")
@@ -25,11 +26,14 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def disconnect(self):
-        if self.connection.is_connected():
+        if self.connection and self.connection.is_connected():
             self.connection.close()
             print("Connection closed")
 
     def add_farmer(self, name, address):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "INSERT INTO farmers (name, address) VALUES (%s, %s)"
@@ -40,6 +44,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def update_farmer(self, farmer_id, name=None, address=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "UPDATE farmers SET "
@@ -61,8 +68,18 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def delete_farmer(self, farmer_id):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
+            # Удаление связанных записей из таблицы needs
+            query = "DELETE FROM needs WHERE farmer_id = %s"
+            cursor.execute(query, (farmer_id,))
+            # Удаление связанных записей из таблицы products
+            query = "DELETE FROM products WHERE farmer_id = %s"
+            cursor.execute(query, (farmer_id,))
+            # Удаление фермера
             query = "DELETE FROM farmers WHERE id = %s"
             cursor.execute(query, (farmer_id,))
             self.connection.commit()
@@ -71,8 +88,19 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def add_product(self, farmer_id, name, quantity, quality, price):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
+            # Проверка существования фермера
+            query = "SELECT id FROM farmers WHERE id = %s"
+            cursor.execute(query, (farmer_id,))
+            result = cursor.fetchone()
+            if result is None:
+                print(f"Farmer with ID {farmer_id} does not exist")
+                return
+            # Добавление продукта
             query = "INSERT INTO products (farmer_id, name, quantity, quality, price) VALUES (%s, %s, %s, %s, %s)"
             cursor.execute(query, (farmer_id, name, quantity, quality, price))
             self.connection.commit()
@@ -81,6 +109,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def update_product(self, product_id, name=None, quantity=None, quality=None, price=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "UPDATE products SET "
@@ -108,6 +139,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def delete_product(self, product_id):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "DELETE FROM products WHERE id = %s"
@@ -118,6 +152,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def add_need(self, farmer_id, name, type_, price):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "INSERT INTO needs (farmer_id, name, type, price) VALUES (%s, %s, %s, %s)"
@@ -128,6 +165,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def update_need(self, need_id, name=None, type_=None, price=None):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "UPDATE needs SET "
@@ -152,6 +192,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def delete_need(self, need_id):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor()
             query = "DELETE FROM needs WHERE id = %s"
@@ -162,6 +205,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_products_by_farmer(self):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -176,6 +222,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_needs_by_farmer(self):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -190,6 +239,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_total_product_quantity(self, product_name):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -205,6 +257,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_farmer_profit(self):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -220,6 +275,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_farmer_credit(self):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -235,6 +293,9 @@ class FarmManagementDB:
             print(f"Error: {e}")
 
     def get_profit_vs_credit(self):
+        if not self.connection or not self.connection.is_connected():
+            print("Not connected to the database")
+            return
         try:
             cursor = self.connection.cursor(dictionary=True)
             query = """
@@ -267,12 +328,10 @@ def main():
     parser.add_argument("--password", default="root", help="Database password")
     parser.add_argument("--database", default="farm_management", help="Database name")
 
-    # Farmer related arguments
     parser.add_argument("--farmer_id", type=int, help="Farmer ID")
     parser.add_argument("--farmer_name", help="Farmer Name")
     parser.add_argument("--address", help="Farmer Address")
 
-    # Product related arguments
     parser.add_argument("--product_id", type=int, help="Product ID")
     parser.add_argument("--product_farmer_id", type=int, help="Farmer ID for Product")
     parser.add_argument("--product_name", help="Product Name")
